@@ -192,3 +192,8 @@ Si ja existeix i no s’ha indicat --overwrite, es crearà automàticament una v
 
 …
 
+
+Comandes  per a compilar el codi font a un executable amb PyInstaller:
+
+ # pyinstaller --onedir --clean conversioCSV.py --> Crea amb carpeta dist
+ # pyinstaller --onefile --clean conversioCSV.py --> Crea nomes un executble
