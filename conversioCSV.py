@@ -1,5 +1,4 @@
 import argparse
-import pandas as pd
 import os
 import sys
 import csv
@@ -55,17 +54,19 @@ def nom_fulla(fulla):
     return "".join(c if c.isalnum() or c in " .-_()" else "_" for c in fulla).strip() or "sheet"
 
 
-def formatejar_columna_data(df, posicions=(7, 17, 18), format='%d/%m/%Y'):
+def formatejar_columna_data(df, posicions=(7, 17, 18), format_data='%d/%m/%Y'):
+    import pandas as pd
     for pos in posicions:
         if pos < df.shape[1]:
             col = df.columns[pos]
             parsed = pd.to_datetime(df[col], errors='coerce')
-            df[col] = parsed.dt.strftime(format)
+            df[col] = parsed.dt.strftime(format_data)
             df[col] = df[col].fillna('')
     return df
 
 
 def fmt_num(x):
+    import pandas as pd
     if pd.isnull(x):
         return ''
     s = "{:.15g}".format(x)
@@ -74,6 +75,7 @@ def fmt_num(x):
 
 
 def conversio_excel_a_csv(file_path, out_dir=".", overwrite=False, skiprows=10):
+    import pandas as pd
     if not os.path.exists(file_path):
         missatges("Error", f"Arxiu `{file_path}` no trobat", kind='error')
         return
@@ -96,7 +98,7 @@ def conversio_excel_a_csv(file_path, out_dir=".", overwrite=False, skiprows=10):
             df = df.iloc[:, 1:]
 
         df = df.replace({r'[\r\n]+': ' '}, regex=True)
-        df = formatejar_columna_data(df, posicions=(7, 17, 18), format='%d/%m/%Y')
+        df = formatejar_columna_data(df, posicions=(7, 17, 18), format_data='%d/%m/%Y')
         obj_cols = df.select_dtypes(include=['object']).columns
         if len(obj_cols) > 0:
             df[obj_cols] = df[obj_cols].apply(lambda s: s.str.strip().str.rstrip(', '))
